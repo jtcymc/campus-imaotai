@@ -1,16 +1,16 @@
 # 使用官方的Java运行时作为父镜像
-FROM openjdk:8-jdk-alpine AS backend-builder
+FROM maven:3.3.9-jdk-8-alpine AS backend-builder
 # 设置工作目录为/app
 WORKDIR /app
-# 运行mvn命令来下载依赖
-RUN mvn dependency:go-offline
+# # 运行mvn命令来下载依赖
+# RUN mvn dependency:go-offline
 # 复制所有文件到容器
 COPY ./ .
 # 编译并打包Java应用
-RUN mvn package -DskipTests
+RUN mvn clean install -Dmaven.test.skip=true -Dmaven.javadoc.skip=true
 
 # 使用官方的Node.js运行时作为父镜像构建前端
-FROM node:16 AS frontend-builder
+FROM node:16.20.2 AS frontend-builder
 
 # 设置工作目录为/app/frontend
 WORKDIR /app/frontend
@@ -19,7 +19,7 @@ WORKDIR /app/frontend
 COPY ./vue_campus_admin .
 
 # 安装依赖并构建Vue应用
-RUN npm install && npm run build
+RUN npm install && npm run build:prod
 FROM openjdk:8-jdk-alpine
 LABEL maintainer="shaw123t@163.com"
 # Install Nginx
