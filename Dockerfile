@@ -24,7 +24,7 @@ FROM openjdk:8-jdk-alpine
 LABEL maintainer="shaw123t@163.com"
 # Install Nginx
 # RUN apk update
-RUN apk update && apk add --no-cache nginx && mkdir -p /run/nginx && chmod 755 /run/nginx && mkdir -p /home/campus/conf
+RUN apk update && apk add --no-cache nginx && mkdir -p /run/nginx && chmod 755 /run/nginx && mkdir -p /home/campus/conf && apk add --no-cache libc6-compat
 COPY  --from=backend-builder /app/campus-modular/target/campus-modular.jar /home/campus/app.jar
 # 复制html文件到路径
 COPY  --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
